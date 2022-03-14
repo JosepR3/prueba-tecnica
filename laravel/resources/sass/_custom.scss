@@ -1,0 +1,20 @@
+.item-container {
+    margin-top: 2em;
+
+    .item-info__details {
+        margin-top: 25px;
+        background: linear-gradient(220deg, #F8DC00 10%, #EFB600 80%);
+    }
+
+    .item-info__summary {
+        margin-top: 25px;
+
+        .row {
+            margin-top: 10px;
+        }
+    }
+
+    .col-12 {
+        margin-top: 50px;
+    }
+}
