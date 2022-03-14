@@ -23,7 +23,9 @@ class ApiController extends Controller
     /**
      * CREATE THE METHOD calculatePrices RETURNING AN ARRAY WITH THE FINAL PRICE AND THE COSTS OF THE TAXES (21%)
      */
-        public function calculatePrices(){
-
+        public function calculateTax($id){
+            $data = Item::find($id);
+            $price = $data->price;
+            return $price;
         }
 }

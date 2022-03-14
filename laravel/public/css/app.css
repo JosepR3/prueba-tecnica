@@ -1,24 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
-.item-container {
-  margin-top: 2em;
-}
-
-.item-container .item-info__details {
-  margin-top: 25px;
+.checkout__title {
   background: linear-gradient(220deg, #F8DC00 10%, #EFB600 80%);
 }
 
-.item-container .item-info__summary {
-  margin-top: 25px;
+.input__search {
+  width: 5em;
 }
 
-.item-container .item-info__summary .row {
-  margin-top: 10px;
+.item-info__summary,
+.item-info__details {
+  border: 1px solid #ffed4a;
 }
 
-.item-container .col-12 {
-  margin-top: 50px;
+.item__img {
+  width: 10em;
+  height: 10em;
 }
 
 /*!

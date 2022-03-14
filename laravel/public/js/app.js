@@ -2007,6 +2007,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'CheckoutComponent',
@@ -2014,7 +2017,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       items: [],
       itemById: null,
-      itemId: 0
+      itemId: 0,
+      itemTax: 0,
+      itemTotal: 0
     };
   },
   mounted: function mounted() {
@@ -2026,7 +2031,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response, parsed;
+        var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -2037,24 +2042,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 response = _context.sent;
-                _this.items = response.data;
-                parsed = JSON.stringify(_this.items);
-                localStorage.setItem('items', parsed);
-                console.log(_this.items);
-                _context.next = 13;
+                _this.items = response.data; // In case we want to save in local storage to don't make so many calls 
+                // const parsed = JSON.stringify(this.items);
+                // localStorage.setItem('items', parsed);
+
+                _context.next = 10;
                 break;
 
-              case 10:
-                _context.prev = 10;
+              case 7:
+                _context.prev = 7;
                 _context.t0 = _context["catch"](0);
                 console.log("no items");
 
-              case 13:
+              case 10:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 10]]);
+        }, _callee, null, [[0, 7]]);
       }))();
     },
     fetchById: function fetchById() {
@@ -2067,30 +2072,67 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 console.log("dentro de fetchbyid" + _this2.itemId);
-                _context2.prev = 1;
-                _context2.next = 4;
+
+                _this2.calculateTax();
+
+                _context2.prev = 2;
+                _context2.next = 5;
                 return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/getItem/".concat(_this2.itemId));
 
-              case 4:
+              case 5:
                 response = _context2.sent;
                 _this2.itemById = response.data;
                 console.log(_this2.itemById.color);
-                _context2.next = 12;
+                _context2.next = 13;
                 break;
 
-              case 9:
-                _context2.prev = 9;
-                _context2.t0 = _context2["catch"](1);
-                console.log("no items");
+              case 10:
+                _context2.prev = 10;
+                _context2.t0 = _context2["catch"](2);
+                console.log("This item doesn't exist");
 
-              case 12:
+              case 13:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[1, 9]]);
+        }, _callee2, null, [[2, 10]]);
       }))();
-    }
+    },
+    calculateTax: function calculateTax() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.prev = 0;
+                _context3.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/calculateTax/".concat(_this3.itemId));
+
+              case 3:
+                response = _context3.sent;
+                _this3.itemTax = response.data * 21 / 100;
+                _this3.itemTotal = response.data + _this3.itemTax;
+                _context3.next = 11;
+                break;
+
+              case 8:
+                _context3.prev = 8;
+                _context3.t0 = _context3["catch"](0);
+                console.log("This item doesn't exist");
+
+              case 11:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[0, 8]]);
+      }))();
+    } // Saving in localStorage we can manage the info in a way we don't need to execute that amount of calls, calling the database by pages for example
+
   }
 });
 
@@ -38437,11 +38479,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container item-container" }, [
-    _c("div", { staticClass: "row" }, [
-      _vm._m(0),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-12" }, [
+  return _c("div", { staticClass: "item-container container my-3" }, [
+    _c("h1", { staticClass: "checkout__title p-3" }, [
+      _vm._v("Elabs Consulting Test")
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row container" }, [
+      _c("div", { staticClass: "col-12 my-2" }, [
         _c("label", { attrs: { for: "item-id" } }, [_vm._v("Search Item")]),
         _vm._v(" "),
         _c("input", {
@@ -38453,7 +38497,8 @@ var render = function() {
               expression: "itemId"
             }
           ],
-          attrs: { placeholder: "Search Item", id: "item-id" },
+          staticClass: "input__search",
+          attrs: { placeholder: "Item Id", id: "item-id" },
           domProps: { value: _vm.itemId },
           on: {
             input: function($event) {
@@ -38468,7 +38513,7 @@ var render = function() {
         _c(
           "button",
           {
-            staticClass: "btn btn-warning",
+            staticClass: "btn btn-outline-warning",
             attrs: { type: "submit" },
             on: { click: _vm.fetchById }
           },
@@ -38476,37 +38521,35 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-6 item-info" }, [
-        _c("div", { staticClass: "container item-info__details" }, [
-          _c("h2", [_vm._v("Item Details")]),
+      _c("div", { staticClass: "col-6 mt-3" }, [
+        _c("div", { staticClass: "container item-info__details p-4 rounded" }, [
+          _c("h2", { staticClass: "my-3 mx-2" }, [_vm._v("Item Details")]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-12" }, [
-            _c("div", { staticClass: "col-6" }, [
-              _c("figure", [
-                _vm.itemById
-                  ? _c("img", {
-                      staticClass: "figure-img img-fluid rounded",
-                      attrs: { src: _vm.itemById.image, alt: "item-img" }
-                    })
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.itemById
-                  ? _c("figcaption", { staticClass: "figure-caption" }, [
-                      _vm._v(_vm._s(_vm.itemById.brand + _vm.itemById.model))
-                    ])
-                  : _vm._e()
-              ])
+          _c("div", { staticClass: "col-12 mx-2" }, [
+            _c("div", [
+              _vm.itemById
+                ? _c("img", {
+                    staticClass: "item__img img-fluid rounded",
+                    attrs: { src: _vm.itemById.image, alt: "item-img" }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.itemById
+                ? _c("h3", { staticClass: "my-2" }, [
+                    _vm._v(_vm._s(_vm.itemById.brand + _vm.itemById.model))
+                  ])
+                : _c("p", { staticClass: "mt-5" }, [_vm._v("No Item yet")])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-6" }, [
-              _c("div", { staticClass: "card" }, [
+              _c("div", [
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "card-text" }, [
                     _c("h4", [_vm._v("Color")]),
                     _vm._v(" "),
                     _vm.itemById
                       ? _c("p", [_vm._v(_vm._s(_vm.itemById.color))])
-                      : _vm._e()
+                      : _c("p", [_vm._v("No Item yet")])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "card-text" }, [
@@ -38514,15 +38557,15 @@ var render = function() {
                     _vm._v(" "),
                     _vm.itemById
                       ? _c("p", [_vm._v(_vm._s(_vm.itemById.material))])
-                      : _vm._e()
+                      : _c("p", [_vm._v("No Item yet")])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "card-text" }, [
                     _c("h4", [_vm._v("Price")]),
                     _vm._v(" "),
                     _vm.itemById
-                      ? _c("p", [_vm._v(_vm._s(_vm.itemById.price))])
-                      : _vm._e()
+                      ? _c("p", [_vm._v(_vm._s(_vm.itemById.price) + "€")])
+                      : _c("p", [_vm._v("No Item yet")])
                   ])
                 ])
               ])
@@ -38531,74 +38574,59 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm._m(1)
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-12" }, [
-      _c("h1", [_vm._v("Elabs Consulting Test")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-6" }, [
-      _c("div", { staticClass: "container item-info__summary" }, [
-        _c("h2", [_vm._v("Summary")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-12" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-4" }, [
-              _vm._v(
-                "\n                            Price\n                        "
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-8" }, [
-              _vm._v(
-                "\n                            << put here the item price >>\n                        "
-              )
-            ])
-          ]),
+      _c("div", { staticClass: "col-6 mt-3" }, [
+        _c("div", { staticClass: "container item-info__summary p-4 rounded" }, [
+          _c("h2", { staticClass: "my-3 mx-2" }, [_vm._v("Summary")]),
           _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-4" }, [
-              _vm._v(
-                "\n                            Taxes\n                        "
-              )
+          _c("div", { staticClass: "col-12 mx-2" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-4" }, [
+                _vm._v(
+                  "\n                            Price\n                        "
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-8" }, [
+                _vm.itemById
+                  ? _c("p", [_vm._v(_vm._s(_vm.itemById.price) + "€")])
+                  : _c("p", [_vm._v("No Item yet")])
+              ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-8" }, [
-              _vm._v(
-                "\n                            << put here the taxes from the calc request >>\n                        "
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-4 bold" }, [
-              _vm._v(
-                "\n                            Total:\n                        "
-              )
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-4" }, [
+                _vm._v(
+                  "\n                            Taxes (21%)\n                        "
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-8" }, [
+                _vm.itemById
+                  ? _c("p", [_vm._v(_vm._s(_vm.itemTax) + "€")])
+                  : _c("p", [_vm._v("No Item yet")])
+              ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-8" }, [
-              _vm._v(
-                "\n                            << put here the total price from the calc request >>\n                        "
-              )
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-4 bold" }, [
+                _vm._v(
+                  "\n                            Total:\n                        "
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-8" }, [
+                _vm.itemById
+                  ? _c("p", [_vm._v(_vm._s(_vm.itemTotal) + "€")])
+                  : _c("p", [_vm._v("No Item yet")])
+              ])
             ])
           ])
         ])
       ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 

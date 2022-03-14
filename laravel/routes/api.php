@@ -17,5 +17,6 @@ use App\Http\Controllers\ApiController;
 
 Route::get('getItem/{id}', [ApiController::class, 'getItemById']);
 Route::get('getItems', [ApiController::class, 'getItems']);
+Route::get('calculateTax/{id}',  [ApiController::class, 'calculateTax']);
 
 
